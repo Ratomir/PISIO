@@ -357,6 +357,7 @@ DROP TABLE IF EXISTS `vratomir`.`Comment` ;
 CREATE TABLE IF NOT EXISTS `vratomir`.`Comment` (
   `Id` INT NOT NULL AUTO_INCREMENT,
   `Invalidated` BIT NOT NULL DEFAULT 0,
+  `CreatedDateTime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Content` NVARCHAR(1024) NOT NULL,
   `Comment_Id` INT NULL,
   `ProjectStage_Id` INT NOT NULL,
@@ -976,12 +977,30 @@ USE `vratomir`;
 DELIMITER $$
 
 USE `vratomir`$$
+DROP TRIGGER IF EXISTS `vratomir`.`User_BEFORE_INSERT` $$
+USE `vratomir`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `vratomir`.`User_BEFORE_INSERT` BEFORE INSERT ON `User` FOR EACH ROW
+BEGIN
+set New.CreatedDateTime = NOW();
+END$$
+
+
+USE `vratomir`$$
 DROP TRIGGER IF EXISTS `vratomir`.`User_AFTER_UPDATE` $$
 USE `vratomir`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `vratomir`.`User_AFTER_UPDATE` AFTER UPDATE ON `User` FOR EACH ROW
 BEGIN
 INSERT INTO UserHistorization(Invalidated, UpdatedDateTime, FirstName, LastName, Email, UserName, CellPhone, WorkPhone, Password, Salt, IsPasswordExpired, AllowLogin, LastPasswordChangeDate, User_Id) 
 VALUES (OLD.Invalidated, OLD.UpdatedDateTime, OLD.FirstName, OLD.LastName, OLD.Email, OLD.UserName, OLD.CellPhone, OLD.WorkPhone, OLD.Password, OLD.Salt, OLD.IsPasswordExpired, OLD.AllowLogin, OLD.LastPasswordChangeDate, OLD.Id);
+END$$
+
+
+USE `vratomir`$$
+DROP TRIGGER IF EXISTS `vratomir`.`Actor_BEFORE_INSERT` $$
+USE `vratomir`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `vratomir`.`Actor_BEFORE_INSERT` BEFORE INSERT ON `Actor` FOR EACH ROW
+BEGIN
+set New.CreatedDateTime = NOW();
 END$$
 
 
@@ -1015,6 +1034,24 @@ END$$
 
 
 USE `vratomir`$$
+DROP TRIGGER IF EXISTS `vratomir`.`Project_BEFORE_INSERT` $$
+USE `vratomir`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `vratomir`.`Project_BEFORE_INSERT` BEFORE INSERT ON `Project` FOR EACH ROW
+BEGIN
+set New.CreatedDateTime = NOW();
+END$$
+
+
+USE `vratomir`$$
+DROP TRIGGER IF EXISTS `vratomir`.`ActorStage_BEFORE_INSERT` $$
+USE `vratomir`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `vratomir`.`ActorStage_BEFORE_INSERT` BEFORE INSERT ON `ActorStage` FOR EACH ROW
+BEGIN
+set New.CreatedDateTime = NOW();
+END$$
+
+
+USE `vratomir`$$
 DROP TRIGGER IF EXISTS `vratomir`.`ActorStage_AFTER_UPDATE` $$
 USE `vratomir`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `vratomir`.`ActorStage_AFTER_UPDATE` AFTER UPDATE ON `ActorStage` FOR EACH ROW
@@ -1035,12 +1072,30 @@ END$$
 
 
 USE `vratomir`$$
+DROP TRIGGER IF EXISTS `vratomir`.`DocumentTemplate_BEFORE_INSERT` $$
+USE `vratomir`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `vratomir`.`DocumentTemplate_BEFORE_INSERT` BEFORE INSERT ON `DocumentTemplate` FOR EACH ROW
+BEGIN
+set New.CreatedDateTime = NOW();
+END$$
+
+
+USE `vratomir`$$
 DROP TRIGGER IF EXISTS `vratomir`.`DocumentStorage_AFTER_UPDATE` $$
 USE `vratomir`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `vratomir`.`DocumentStorage_AFTER_UPDATE` AFTER UPDATE ON `DocumentStorage` FOR EACH ROW
 BEGIN
 INSERT INTO DocumentStorageHistorization(Invalidated, UpdatedDateTime, Data, FileExtension, OriginalName, Remarks, Keywords, UpdatedUser_Id, DocumentStorage_Id) VALUES 
 (OLD.Invalidated, OLD.UpdatedDateTime, OLD.Data, OLD.FileExtension, OLD.OriginalName, OLD.Remarks, OLD.Keywords, OLD.UpdatedUser_Id, OLD.Id);
+END$$
+
+
+USE `vratomir`$$
+DROP TRIGGER IF EXISTS `vratomir`.`DocumentStorage_BEFORE_INSERT` $$
+USE `vratomir`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `vratomir`.`DocumentStorage_BEFORE_INSERT` BEFORE INSERT ON `DocumentStorage` FOR EACH ROW
+BEGIN
+set New.CreatedDateTime = NOW();
 END$$
 
 
@@ -1055,12 +1110,30 @@ END$$
 
 
 USE `vratomir`$$
+DROP TRIGGER IF EXISTS `vratomir`.`ProjectExpense_BEFORE_INSERT` $$
+USE `vratomir`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `vratomir`.`ProjectExpense_BEFORE_INSERT` BEFORE INSERT ON `ProjectExpense` FOR EACH ROW
+BEGIN
+set New.CreatedDateTime = NOW();
+END$$
+
+
+USE `vratomir`$$
 DROP TRIGGER IF EXISTS `vratomir`.`ProjectArrival_AFTER_UPDATE` $$
 USE `vratomir`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `vratomir`.`ProjectArrival_AFTER_UPDATE` AFTER UPDATE ON `ProjectArrival` FOR EACH ROW
 BEGIN
 INSERT INTO ProjectArrivalHistorization(Invalidated, UpdatedDateTime, Price, Notes, UpdatedUser_Id, ProjectArrival_Id) 
 VALUES (OLD.Invalidated, OLD.UpdatedDateTime, OLD.Price, OLD.Notes, OLD.UpdatedUser_Id, OLD.Id);
+END$$
+
+
+USE `vratomir`$$
+DROP TRIGGER IF EXISTS `vratomir`.`ProjectArrival_BEFORE_INSERT` $$
+USE `vratomir`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `vratomir`.`ProjectArrival_BEFORE_INSERT` BEFORE INSERT ON `ProjectArrival` FOR EACH ROW
+BEGIN
+set New.CreatedDateTime = NOW();
 END$$
 
 
