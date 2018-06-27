@@ -31,8 +31,8 @@ CREATE TABLE IF NOT EXISTS `vratomir`.`User` (
   `UserName` NVARCHAR(45) NOT NULL,
   `CellPhone` VARCHAR(45) NULL,
   `Workphone` VARCHAR(45) NULL,
-  `Password` VARCHAR(50) NOT NULL,
-  `Salt` VARCHAR(64) NOT NULL,
+  `Password` VARCHAR(128) NOT NULL,
+  `Salt` VARCHAR(36) NOT NULL,
   `IsPasswordExpired` BIT NOT NULL DEFAULT 0,
   `AllowLogin` BIT NOT NULL DEFAULT 1,
   `LastPasswordChangeDate` DATETIME NULL,
@@ -981,6 +981,9 @@ DROP TRIGGER IF EXISTS `vratomir`.`User_BEFORE_INSERT` $$
 USE `vratomir`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `vratomir`.`User_BEFORE_INSERT` BEFORE INSERT ON `User` FOR EACH ROW
 BEGIN
+declare salt nvarchar(36) default UUID();
+set New.Salt = salt;
+set New.Password = SHA2(CONCAT(salt, New.Password), 512);
 set New.CreatedDateTime = NOW();
 END$$
 
